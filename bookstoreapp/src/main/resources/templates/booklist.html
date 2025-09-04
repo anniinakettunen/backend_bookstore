@@ -2,32 +2,41 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Book List</title>
+    <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
 </head>
-<body>
-    <h1>Books</h1>
+<body class="container mt-4">
+    <h1 class="mb-4">Books</h1>
 
-
-    <form action="/search" method="get">
-        <input type="text" name="author" placeholder="Search by author" />
-        <input type="submit" value="Search" />
+   
+    <form action="/search" method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="author" class="form-control" placeholder="Search by author" />
+            <button type="submit" class="btn btn-outline-secondary">Search</button>
+        </div>
     </form>
 
 
-    <a href="/add">Add Book</a>
+    <a href="/add" class="btn btn-success mb-3">Add Book</a>
 
-    <table>
-        <tr><th>Title</th><th>Author</th><th>Year</th><th>Price</th><th>Actions</th></tr>
-        <tr th:each="book : ${books}">
-            <td th:text="${book.title}"></td>
-            <td th:text="${book.author}"></td>
-            <td th:text="${book.publicationYear}"></td>
-            <td th:text="${book.price}"></td>
-            <td>
-                <a th:href="@{/delete/{id}(id=${book.id})}">Delete</a>
-                <a th:href="@{/edit/{id}(id=${book.id})}">Edit</a>
-
-            </td>
-        </tr>
+   
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Title</th><th>Author</th><th>Year</th><th>Price</th><th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="book : ${books}">
+                <td th:text="${book.title}"></td>
+                <td th:text="${book.author}"></td>
+                <td th:text="${book.publicationYear}"></td>
+                <td th:text="${book.price}"></td>
+                <td>
+                    <a th:href="@{/edit/{id}(id=${book.id})}" class="btn btn-primary btn-sm">Edit</a>
+                    <a th:href="@{/delete/{id}(id=${book.id})}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        </tbody>
     </table>
 </body>
 </html>
