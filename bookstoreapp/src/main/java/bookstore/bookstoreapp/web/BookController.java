@@ -3,19 +3,24 @@ package bookstore.bookstoreapp.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
 import bookstore.bookstoreapp.model.Book;
-import bookstore.bookstoreapp.model.BookRepository;
+import bookstore.bookstoreapp.repository.BookRepository;
+import bookstore.bookstoreapp.repository.CategoryRepository;
+import bookstore.bookstoreapp.model.Category;
+
 
 @Controller
 public class BookController {
 
     @Autowired
     private BookRepository repository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @RequestMapping(value = "/booklist")
     public String bookList(Model model) {
@@ -31,14 +36,80 @@ public class BookController {
     @RequestMapping(value = "/add")
     public String addBook(Model model) {
         model.addAttribute("book", new Book());
+        model.addAttribute("categories", categoryRepository.findAll());
         return "addbook";
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String save(Book book) {
-        repository.save(book);
+   @RequestMapping(value = "/save", method = RequestMethod.POST)
+public String save(@Valid @ModelAttribute("book") Book book,
+                   BindingResult bindingResult,
+                   @RequestParam("category.id") Long categoryId,
+                   Model model) {
+
+    if (bindingResult.hasErrors()) {
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "addbook";
+    }
+
+    Category category = categoryRepository.findById(categoryId).orElse(null);
+    if (category == null) {
+        bindingResult.rejectValue("category", "error.book", "Invalid category selected");
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "addbook";
+    }
+
+    book.setCategory(category);
+    repository.save(book);
+    return "redirect:/booklist";
+}
+
+    @RequestMapping(value = "/edit/{id}")
+    public String editBook(@PathVariable("id") Long id, Model model) {
+        Book book = repository.findById(id).orElse(null);
+        if (book == null) {
+            return "redirect:/booklist";
+        }
+
+        model.addAttribute("book", book);
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "addbook";
+    }
+
+@RequestMapping(value = "/update", method = RequestMethod.POST)
+public String updateBook(@RequestParam("id") Long id,
+                         @RequestParam("category.id") Long categoryId,
+                         @Valid Book book,
+                         BindingResult bindingResult,
+                         Model model) {
+
+    if (bindingResult.hasErrors()) {
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "addbook";
+    }
+
+    Category category = categoryRepository.findById(categoryId).orElse(null);
+    if (category == null) {
+        bindingResult.rejectValue("category", "error.book", "Invalid category selected");
+        model.addAttribute("categories", categoryRepository.findAll());
+        return "addbook";
+    }
+
+    Book existingBook = repository.findById(id).orElse(null);
+    if (existingBook == null) {
         return "redirect:/booklist";
     }
+
+    existingBook.setTitle(book.getTitle());
+    existingBook.setAuthor(book.getAuthor());
+    existingBook.setPublicationYear(book.getPublicationYear());
+    existingBook.setIsbn(book.getIsbn());
+    existingBook.setPrice(book.getPrice());
+    existingBook.setCategory(category);
+
+    repository.save(existingBook);
+    return "redirect:/booklist";
+}
+
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public String deleteBook(@PathVariable("id") Long id) {
@@ -46,24 +117,9 @@ public class BookController {
         return "redirect:/booklist";
     }
 
-   
     @RequestMapping("/search")
     public String searchBooks(@RequestParam("author") String author, Model model) {
         model.addAttribute("books", repository.findByAuthor(author));
         return "booklist";
-    }
-
-    @RequestMapping(value = "/edit/{id}")
-    public String editBook(@PathVariable("id") Long id, Model model) {
-        Book book = repository.findById(id).orElse(null);
-        model.addAttribute("book", book);
-        return "addbook"; 
-    }
-
-
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public String updateBook(Book book) {
-        repository.save(book);
-        return "redirect:/booklist";
     }
 }

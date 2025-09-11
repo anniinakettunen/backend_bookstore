@@ -4,6 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
 
 @Entity
 public class Book {
@@ -12,11 +17,23 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)  
     private Long id;
 
-    private String title;
+    @NotEmpty(message = "Book's title cannot be empty.")
+    @Size(min = 1, max = 250)
+    private String title;   
+
+    @NotEmpty(message = "Author cannot be empty.")
     private String author;
+
+    @Min(value = 1000, message = "Publication year must be realistic.")
     private int publicationYear;
+
+    @NotEmpty(message = "ISBN cannot be empty.")
     private String isbn;
+
+    @Min(value = 0, message = "Price must be positive.")
     private double price;
+
+    
 
     public Book() {}
 
@@ -71,6 +88,19 @@ public class Book {
     public void setPrice(double price) {
         this.price = price;
     }
+
+    @ManyToOne
+@JoinColumn(name = "category_id")
+private Category category;
+
+    public Category getCategory() {
+    return category;
+}
+
+public void setCategory(Category category) {
+    this.category = category;
+}
+
    
 @Override
 public String toString() {

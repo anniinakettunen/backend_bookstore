@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import bookstore.bookstoreapp.model.Book;
-import bookstore.bookstoreapp.model.BookRepository;
+import bookstore.bookstoreapp.repository.BookRepository;
 
 @SpringBootApplication
 public class BookstoreappApplication {
