@@ -2,9 +2,8 @@ package bookstore.bookstoreapp.web;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,12 +22,12 @@ public class BookRestController {
         this.categoryRepository = categoryRepository;
     }
 
-    @RequestMapping(value = "/books", method = RequestMethod.GET)
+    @GetMapping(value = "/books")
     public List<Book> getAllBooks() {
         return (List<Book>) bookRepository.findAll();
     }
 
-    @RequestMapping(value = "/books/{id}", method = RequestMethod.GET)
+    @GetMapping(value = "/books/{id}")
     public @ResponseBody Book getBookById(@PathVariable("id") Long bookId) {
         return bookRepository.findById(bookId).orElse(null);
     }
