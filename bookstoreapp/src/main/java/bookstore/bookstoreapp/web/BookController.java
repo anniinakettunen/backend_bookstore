@@ -1,26 +1,32 @@
 package bookstore.bookstoreapp.web;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import jakarta.validation.Valid;
 import bookstore.bookstoreapp.model.Book;
+import bookstore.bookstoreapp.model.Category;
 import bookstore.bookstoreapp.repository.BookRepository;
 import bookstore.bookstoreapp.repository.CategoryRepository;
-import bookstore.bookstoreapp.model.Category;
+import jakarta.validation.Valid;
 
 
 @Controller
 public class BookController {
 
-    @Autowired
-    private BookRepository repository;
+    
+    private final BookRepository repository;
+    private final CategoryRepository categoryRepository;
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    public BookController(BookRepository repository, CategoryRepository categoryRepository) {
+        this.repository = repository;
+        this.categoryRepository = categoryRepository;
+    }
 
     @RequestMapping(value = "/booklist")
     public String bookList(Model model) {
