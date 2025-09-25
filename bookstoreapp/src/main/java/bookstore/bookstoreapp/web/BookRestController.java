@@ -17,6 +17,10 @@ import bookstore.bookstoreapp.model.Book;
 import bookstore.bookstoreapp.repository.BookRepository;
 import bookstore.bookstoreapp.repository.CategoryRepository;
 
+
+
+// Tännekin voisi laitta validointia. Omaan harjoitustyöhön lisää.
+
 @RestController
 @RequestMapping("/books")
 public class BookRestController {

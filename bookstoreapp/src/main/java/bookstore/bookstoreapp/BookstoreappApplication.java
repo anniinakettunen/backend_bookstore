@@ -4,8 +4,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import bookstore.bookstoreapp.model.AppUser;
 import bookstore.bookstoreapp.model.Book;
+import bookstore.bookstoreapp.repository.AppUserRepository;
 import bookstore.bookstoreapp.repository.BookRepository;
 
 @SpringBootApplication
@@ -28,5 +32,15 @@ public CommandLineRunner demo(BookRepository repository) {
 			
 	};
 }
+
+@Bean
+public CommandLineRunner createUsers(AppUserRepository repository) {
+    return args -> {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        repository.save(new AppUser("user", encoder.encode("user"), "user@example.com", "USER"));
+        repository.save(new AppUser("admin", encoder.encode("admin"), "admin@example.com", "ADMIN"));
+    };
+}
+
 
 }

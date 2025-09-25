@@ -6,9 +6,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Book {
@@ -18,13 +20,14 @@ public class Book {
     private Long id;
 
     @NotEmpty(message = "Book's title cannot be empty.")
-    @Size(min = 1, max = 250)
+    @Size(min = 1, max = 250, message = "Title must be between 1 and 250 characters.")
     private String title;   
 
     @NotEmpty(message = "Author cannot be empty.")
     private String author;
 
     @Min(value = 1000, message = "Publication year must be realistic.")
+    @Max(value = 2100, message = "Publication year must be realistic.")
     private int publicationYear;
 
     @NotEmpty(message = "ISBN cannot be empty.")
@@ -33,7 +36,10 @@ public class Book {
     @Min(value = 0, message = "Price must be positive.")
     private double price;
 
-    
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    @NotNull(message = "Category must be selected.")
+    private Category category;
 
     public Book() {}
 
@@ -89,21 +95,17 @@ public class Book {
         this.price = price;
     }
 
-    @ManyToOne
-@JoinColumn(name = "category_id")
-private Category category;
-
     public Category getCategory() {
-    return category;
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{id=" + id + ", title='" + title + "', author='" + author + "', year=" + publicationYear + "}";
+    }
 }
 
-public void setCategory(Category category) {
-    this.category = category;
-}
-
-   
-@Override
-public String toString() {
-    return "Book{id=" + id + ", title='" + title + "', author='" + author + "', year=" + publicationYear + "}";
-}
-}
