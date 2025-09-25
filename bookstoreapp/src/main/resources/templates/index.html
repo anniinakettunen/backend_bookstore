@@ -1,9 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Bookstore</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
 </head>
-<body>
-    <h2>Welcome to the Bookstore!</h2>
+<body class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Welcome to the Bookstore!</h2>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out" class="btn btn-outline-danger btn-sm" />
+        </form>
+    </div>
+
+    <h4>Hello <span sec:authentication="name"></span>!</h4>
+
+    <div class="mt-4 d-flex gap-3">
+        <a href="/booklist" class="btn btn-primary btn-lg">📚 Go to Book List</a>
+        <a href="/add" class="btn btn-success btn-lg">➕ Add New Book</a>
+    </div>
+
 </body>
 </html>

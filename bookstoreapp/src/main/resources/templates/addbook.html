@@ -1,10 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Add Book</title>
     <link type="text/css" rel="stylesheet" href="/css/bootstrap.min.css" th:href="@{/css/bootstrap.min.css}" />
 </head>
 <body class="container mt-4">
+
+    <div class="d-flex justify-content-end mb-3">
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out" class="btn btn-outline-danger btn-sm" />
+        </form>
+    </div>
+
     <h1 class="mb-4">Add Book</h1>
 
     <form th:object="${book}" th:action="${book.id} != null ? @{/update} : @{/save}" method="post">
@@ -26,7 +34,8 @@
         <div class="mb-3">
             <label for="publicationYear" class="form-label">Publication Year</label>
             <input type="text" id="publicationYear" th:field="*{publicationYear}" class="form-control" />
-            <div class="text-danger" th:if="${#fields.hasErrors('publicationYear')}" th:errors="*{publicationYear}"></div>
+            <div class="text-danger" th:if="${#fields.hasErrors('publicationYear')}" th:errors="*{publicationYear}">
+            </div>
         </div>
 
         <div class="mb-3">
@@ -53,8 +62,10 @@
         <button type="submit" class="btn btn-success">Save</button>
     </form>
 
-    <a href="/booklist" class="btn btn-link mt-3">Back to main page</a>
+    <a href="/booklist" class="btn btn-outline-primary btn-sm">
+        Back to Book List
+    </a>
+
 </body>
+
 </html>
-
-

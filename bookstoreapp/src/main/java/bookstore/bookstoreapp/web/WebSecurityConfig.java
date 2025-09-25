@@ -27,22 +27,25 @@ public class WebSecurityConfig {
 public SecurityFilterChain configure(HttpSecurity http) throws Exception {
 
     http.authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/css/**").permitAll()
-            .requestMatchers(toH2Console()).permitAll()  // for h2console
+            .requestMatchers("/", "/index", "/css/**").permitAll()
+            .requestMatchers(toH2Console()).permitAll()
             .anyRequest().authenticated())
         .headers(headers -> 
-            headers.frameOptions(frameOptions -> frameOptions.disable())) // for h2console
+            headers.frameOptions(frameOptions -> frameOptions.disable()))
         .formLogin(formlogin -> 
             formlogin
-                .defaultSuccessUrl("/booklist", true)
-                .permitAll())
+                .defaultSuccessUrl("/", true)
+                .permitAll()) // ✅ EI loginPage-riviä → käytetään Springin oletussivua
         .logout(logout -> 
-            logout.permitAll())
+            logout
+                .permitAll()
+                .invalidateHttpSession(true))
         .csrf(csrf -> 
-            csrf.ignoringRequestMatchers(toH2Console())); // for h2console, not for production
+            csrf.ignoringRequestMatchers(toH2Console()));
 
     return http.build();
 }
+
 
 
     @Autowired

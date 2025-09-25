@@ -1,5 +1,6 @@
 package bookstore.bookstoreapp.web;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -116,16 +117,17 @@ public String updateBook(@RequestParam("id") Long id,
     return "redirect:/booklist";
 }
 
-
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-    public String deleteBook(@PathVariable("id") Long id) {
-        repository.deleteById(id);
-        return "redirect:/booklist";
-    }
-
     @RequestMapping("/search")
     public String searchBooks(@RequestParam("author") String author, Model model) {
         model.addAttribute("books", repository.findByAuthor(author));
         return "booklist";
     }
+
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public String deleteBook(@PathVariable("id") Long id) {
+    repository.deleteById(id);
+    return "redirect:/booklist";
+}
+
 }
