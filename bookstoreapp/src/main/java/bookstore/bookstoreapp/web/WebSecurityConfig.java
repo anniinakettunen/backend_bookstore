@@ -42,6 +42,7 @@ public SecurityFilterChain configure(HttpSecurity http) throws Exception {
                 .invalidateHttpSession(true))
         .csrf(csrf -> 
             csrf.ignoringRequestMatchers(toH2Console()));
+            // .csrf(csrf -> csrf.disable());  not for production, just for development
 
     return http.build();
 }
@@ -52,4 +53,21 @@ public SecurityFilterChain configure(HttpSecurity http) throws Exception {
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
+
+    /*
+     * private UserDetailsService userDetailsService;
+     *
+     * // Constructor injection
+     * public WebSecurityConfig(UserDetailsService userDetailsService) {
+     * this.userDetailsService = userDetailsService;
+     * }
+     */
+    /*
+     * @Autowired
+     * public void configureGlobal(AuthenticationManagerBuilder auth) throws
+     * Exception {
+     * auth.userDetailsService(userDetailsService).passwordEncoder(new
+     * BCryptPasswordEncoder());
+     * }
+     */
 }
